@@ -1,0 +1,86 @@
+<!DOCTYPE html><script src="https://cdn.jsdelivr.net/npm/texme@1.0.0"></script><textarea>
+
+光线追踪 辐射传输 问题 20210811
+
+# 如何理解除以观测天顶角余弦
+
+## 赵峰 FluorWPS 2.4. Collection of energy at top of canopy
+
+Zhao, F., Guo, Y., Verhoef, W., Gu, X., Liu, L., Yang, G., 2014. A Method to Reconstruct the Solar-Induced Canopy Fluorescence Spectrum from Hyperspectral Measurements. Remote Sensing 6, 10171–10192. https://doi.org/10.3390/rs61010171
+
+![f8af7e0934393cdc1e6aa706f33d790d.png](https://us1.myximage.com/2021/08/11/f8af7e0934393cdc1e6aa706f33d790d.png)
+
+## 漆建波 虚拟光子跟踪算法 BRF
+
+漆建波博士毕业论文
+
+![52757b656fe92b421a1f5278bdff5435.png](https://us1.myximage.com/2021/08/11/52757b656fe92b421a1f5278bdff5435.png)
+
+# 如何理解乘观测天顶角余弦
+
+## Hovi and Korpela 2.4. Simulation of WF LiDAR data from vegetation
+
+Hovi, A., Korpela, I., 2014. Real and simulated waveform-recording LiDAR data in juvenile boreal forest vegetation. Remote Sensing of Environment 140, 665–678. https://doi.org/10.1016/j.rse.2013.10.003
+
+![99b1593483334bb1e013fa473b450966.png](https://us1.myximage.com/2021/08/11/99b1593483334bb1e013fa473b450966.png)
+
+## Mitsuba BSDF
+
+文件`bsdf.h`中函数`eval()`用于Evaluate the BSDF，`already multiplies the result by the cosine foreshortening factor with respect to the outgoing direction`。这是为什么？
+
+原文：
+```c++
+	/**
+	 * \brief Evaluate the BSDF f(wi, wo) or its adjoint version f^{*}(wi, wo)
+	 *
+	 * This method allows to query the BSDF as a whole or pick out
+	 * individual components. When querying a smooth (i.e. non-degenerate)
+	 * component, it already multiplies the result by the cosine
+	 * foreshortening factor with respect to the outgoing direction.
+	 *
+	 * \param bRec
+	 *     A record with detailed information on the BSDF query
+	 *
+	 * \param measure
+	 *     Specifies the measure of the component. This is necessary
+	 *     to handle BSDFs, whose components live on spaces with
+	 *     different measures. (E.g. a diffuse material with an
+	 *     ideally smooth dielectric coating).
+	 */
+	virtual Spectrum eval(const BSDFSamplingRecord &bRec,
+		EMeasure measure = ESolidAngle) const = 0;
+```
+
+例如在`diffuse.cpp`中的实现
+```c++
+	Spectrum eval(const BSDFSamplingRecord &bRec, EMeasure measure) const {
+		if (!(bRec.typeMask & EDiffuseReflection) || measure != ESolidAngle
+			|| Frame::cosTheta(bRec.wi) <= 0
+			|| Frame::cosTheta(bRec.wo) <= 0)
+			return Spectrum(0.0f);
+		return m_reflectance->eval(bRec.its)
+			* (INV_PI * Frame::cosTheta(bRec.wo));
+	}
+```
+
+这是Hovi and Korpela中公式右边的前半部分？
+$$
+\frac{\rho\cos\theta}{\pi}
+$$
+
+
+# 辐射传输方程的推导
+
+# Glassner 1995 12 Energy transport
+
+Principles of Digital Image Synthesis (The Morgan Kaufmann Series in Computer Graphics) 2 Volume Set
+
+书中12.4 Scattering
+
+![4915c847e58297f28e245599a69bb7fd.png](https://us1.myximage.com/2021/08/11/4915c847e58297f28e245599a69bb7fd.png)
+
+
+
+
+
+
