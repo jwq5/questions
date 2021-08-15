@@ -1,18 +1,24 @@
 <!DOCTYPE html><script src="https://cdn.jsdelivr.net/npm/texme@1.0.0"></script><textarea>
 
-光线追踪 辐射传输 问题 20210811
+20210811 光线追踪 辐射传输 问题
+20210815 讨论
 
 # 如何理解除以观测天顶角余弦
 
 ## 赵峰 FluorWPS 2.4. Collection of energy at top of canopy
 
-Zhao, F., Guo, Y., Verhoef, W., Gu, X., Liu, L., Yang, G., 2014. A Method to Reconstruct the Solar-Induced Canopy Fluorescence Spectrum from Hyperspectral Measurements. Remote Sensing 6, 10171–10192. https://doi.org/10.3390/rs61010171
+Zhao, F., Dai, X., Verhoef, W., Guo, Y., van der Tol, C., Li, Y., Huang, Y., 2016. FluorWPS: A Monte Carlo ray-tracing model to compute sun-induced chlorophyll fluorescence of three-dimensional canopy. Remote Sensing of Environment 187, 385–399. https://doi.org/10.1016/j.rse.2016.10.036
 
-![f8af7e0934393cdc1e6aa706f33d790d.png](https://us1.myximage.com/2021/08/11/f8af7e0934393cdc1e6aa706f33d790d.png)
+![d8ecbc0ce6d310f7fb22a9e259394b61.png](https://us1.myximage.com/2021/08/15/d8ecbc0ce6d310f7fb22a9e259394b61.png)
+
+1. $\frac{|\boldsymbol n_d\cdot \boldsymbol n_l|}{\cos\theta_o}=1$?
+2. 分母的$\pi$？
 
 ## 漆建波 虚拟光子跟踪算法 BRF
 
 漆建波博士毕业论文
+
+![bc70889ac2bdaa4b431cf73cf28018d4.png](https://us1.myximage.com/2021/08/15/bc70889ac2bdaa4b431cf73cf28018d4.png)
 
 ![52757b656fe92b421a1f5278bdff5435.png](https://us1.myximage.com/2021/08/11/52757b656fe92b421a1f5278bdff5435.png)
 
@@ -23,6 +29,16 @@ Zhao, F., Guo, Y., Verhoef, W., Gu, X., Liu, L., Yang, G., 2014. A Method to Rec
 Hovi, A., Korpela, I., 2014. Real and simulated waveform-recording LiDAR data in juvenile boreal forest vegetation. Remote Sensing of Environment 140, 665–678. https://doi.org/10.1016/j.rse.2013.10.003
 
 ![99b1593483334bb1e013fa473b450966.png](https://us1.myximage.com/2021/08/11/99b1593483334bb1e013fa473b450966.png)
+
+理解
+朗伯表面BSDF为$\rho/\pi$
+设表面有面积$\Delta S$，入射辐照度为$E=P_{i,n-1}/\Delta S$
+出射辐亮度$L=E\rho/\pi$
+朝观察方向一个立体角$\Delta\Omega$内发出的功率为出射辐亮度$L$乘观察方向上投影面积，乘观察方向一个立体角$\Delta\Omega$：$$L\cdot\Delta S\cos \theta\cdot\Delta\Omega=\frac{P_{i,n-1}}{\Delta S}\frac{\rho}{\pi}\Delta S\cos\theta\Delta\Omega$$
+由辐射强度定义，功率除以立体角：
+$$
+I_{i,n}=\frac{L\cdot\Delta S\cos \theta\cdot\Delta\Omega}{\Delta\Omega}=\frac{\rho\cos\theta}{\pi}P_{i,n-1}
+$$
 
 ## Mitsuba BSDF
 
@@ -74,6 +90,8 @@ $$
 # Glassner 1995 12 Energy transport
 
 Principles of Digital Image Synthesis (The Morgan Kaufmann Series in Computer Graphics) 2 Volume Set
+
+![f2a7f91e0965c153521e268b189abbaa.png](https://us1.myximage.com/2021/08/15/f2a7f91e0965c153521e268b189abbaa.png)
 
 书中12.4 Scattering
 
